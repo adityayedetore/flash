@@ -36,35 +36,37 @@ function getParameters(userInputElements) {
 }
 function getRawParameters(userInputs) {
   const rawParameters = {
-    attractorDuration: parseInt(userInputs.attractorDuration.value),
+    attractorDuration: parseFloat(userInputs.attractorDuration.value),
     videoNumber: parseInt(userInputs.videoNumber.value),
-    videoDuration: parseInt(userInputs.videoDuration.value),
+    videoDuration: parseFloat(userInputs.videoDuration.value),
     videoWidth: parseInt(userInputs.videoContainer.offsetWidth),
     videoHeight: parseInt(userInputs.videoContainer.offsetHeight),
-    flashTime: parseInt(userInputs.flashTime.value),
+    flashTime: parseFloat(userInputs.flashTime.value),
     flashLocationX: parseFloat(userInputs.flashLocationX.value),
     flashLocationY: parseFloat(userInputs.flashLocationY.value),
-    flashDuration: parseInt(userInputs.flashDuration.value),
+    flashDuration: parseFloat(userInputs.flashDuration.value),
     dotOpacity: parseFloat(userInputs.dotOpacity.value)
   }
   return rawParameters;
 }
 function processParameters(parameters) {
+  //multplying by 1000 to convert from seconds to milliseconds
   const attractor = {
     show: 0,
-    hide: parameters.attractorDuration
+    hide: 1000 * parameters.attractorDuration 
   }
   const video = {
     show: attractor.hide,
     start: attractor.hide,
-    stop: parameters.videoDuration + attractor.hide,
-    hide: parameters.videoDuration + attractor.hide
+    stop: 1000 * parameters.videoDuration + attractor.hide,
+    hide: 1000 * parameters.videoDuration + attractor.hide
   }
-  const x = parameters.flashLocationX * parameters.videoWidth;
-  const y = parameters.flashLocationY * parameters.videoHeight;
+  //multplying by 0.1 to convert to proportion
+  const x = (0.1 * parameters.flashLocationX) * parameters.videoWidth;
+  const y = (0.1 * parameters.flashLocationY) * parameters.videoHeight;
   const flashDot = {
-    time: parameters.flashTime + video.start,
-    duration: parameters.flashDuration,
+    time: 1000 * parameters.flashTime + video.start,
+    duration: 1000 * parameters.flashDuration,
     opacity: parameters.dotOpacity,
     x: x, 
     y: y
@@ -91,15 +93,18 @@ function runTrialVideo(parameters, elements) {
   setupDot(parameters.flashDot, elements.dot);
   setTimeout(function() {flashDot(elements.dot, parameters.flashDot.duration);}, parameters.flashDot.time);
   setTimeout(function() {stopVideo(elements.video);}, parameters.video.stop);
+  setTimeout(function() {resetVideo(elements.video);}, parameters.video.hide);
   setTimeout(function() {hide(elements.video);}, parameters.video.hide);
   setTimeout(function() {show(elements.inputBoxes);}, parameters.video.hide);
 }
 function startVideo(video) {
-  video.currentTime = 0;
   video.play();
 }
 function stopVideo(video) {
   video.pause();
+}
+function resetVideo(video) {
+  video.currentTime = 0;
 }
 function setupDot(dotParameters, dot) {
   preloadDot(dot);
