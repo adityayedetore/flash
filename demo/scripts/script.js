@@ -61,7 +61,7 @@
       hide: 1000 * parameters.videoDuration + attractor.hide
     }
     const flashDot = {
-      timeForLocCSV: parameters.flashTime,
+      timeForLocCSV: parameters.flashTime, //in seconds 
       time: 1000 * parameters.flashTime + video.start,
       duration: 1000 * parameters.flashDuration,
       opacity: parameters.dotOpacity,
@@ -111,27 +111,27 @@
         setDotLocation(locationTable, dotParameters, dot)
       }
     };
-    //External function, callback function is config.complete
+    //External function, callback is config.complete
     Papa.parse("../../resources/dot-locations/Movie_Test.csv", config);
     setDotOpacity(dotParameters, dot);
   }
   function preloadDot(dot) {
     left = dot.style.left;
-    top = dot.style.top;
+    bottom = dot.style.bottom;
     dot.style.left = "-9999px";
-    dot.style.top = "-9999px";
+    dot.style.bottom = "-9999px";
     dot.classList.toggle("hide");
     dot.classList.toggle("hide");
     dot.style.left = left;
-    dot.style.top = top;
+    dot.style.bottom = bottom;
   }
   function setDotLocation(locationTable, dotParameters, dot) {
-    const chevronAndBallLocations = locationTable.data.find(element => element[0] >= dotParameters.timeForLocCSV);
-    // divide by 13 to convert to proportion (csv units are weird)
-    const x = (parseFloat(chevronAndBallLocations[1])/13.0) * dotParameters.videoWidth;
-    const y = (parseFloat(chevronAndBallLocations[2])/13.0) * dotParameters.videoHeight;
+    const chevronAndBallLocations = locationTable.data.find(element => element[0] > dotParameters.timeForLocCSV);
+    // divide by 14 to convert to proportion (csv units are weird)
+    const x = (parseFloat(chevronAndBallLocations[1])/14.0) * dotParameters.videoWidth;
+    const y = (parseFloat(chevronAndBallLocations[2])/14.0) * dotParameters.videoHeight;
     dot.style.left = x + "px";
-    dot.style.top = y + "px";
+    dot.style.bottom = y + "px";
   }
   function setDotOpacity(dotParameters, dot) {
     dot.style.opacity = dotParameters.opacity;
