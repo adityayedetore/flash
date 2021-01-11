@@ -9,18 +9,12 @@ video {
   height: 100%;
 }
 .video-overlay {
-  background-image: url("../resources/images/dot.png");
-  background-size: 30px 30px;
-  margin-left: -15px;
-  margin-top: -15px;
-  background-repeat: no-repeat;
   z-index: 1;
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   opacity: 0.5;
-  //background-color: red;
-  //the margins and width should be the radius and diameter of the chevron
+  transform: translate(-50%, 50%);
 }
 .hide {
   display: none;
