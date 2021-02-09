@@ -62,7 +62,7 @@
     }
     const flashDot = {
       timeForLocCSV: parameters.flashTime, //in seconds 
-      time: 1000 * parameters.flashTime + video.start,
+      time: parameters.flashTime, //in seconds, relative to video start time
       duration: 1000 * parameters.flashDuration,
       opacity: parameters.dotOpacity,
       videoWidth: parameters.videoWidth,
@@ -88,7 +88,7 @@
     setTimeout(function() {show(elements.video);}, parameters.video.show);
     setTimeout(function() {startVideo(elements.video);}, parameters.video.start);
     setupDot(parameters.flashDot, elements.dot);
-    setTimeout(function() {flashDot(elements.dot, parameters.flashDot.duration);}, parameters.flashDot.time);
+    setTimeout(function() {flashDotTimer(elements.dot, parameters.flashDot, elements.video);}, parameters.video.start); 
     setTimeout(function() {stopVideo(elements.video);}, parameters.video.stop);
     setTimeout(function() {resetVideo(elements.video);}, parameters.video.hide);
     setTimeout(function() {hide(elements.video);}, parameters.video.hide);
@@ -112,7 +112,7 @@
       }
     };
     //External function, callback is config.complete
-    Papa.parse("../../resources/dot-locations/Movie_Test.csv", config);
+    Papa.parse("../resources/dot-locations/Movie-Test.csv", config);
     setDotOpacity(dotParameters, dot);
   }
   function preloadDot(dot) {
@@ -127,19 +127,25 @@
   }
   function setDotLocation(locationTable, dotParameters, dot) {
     const chevronAndBallLocations = locationTable.data.find(element => element[0] > dotParameters.timeForLocCSV);
-    // divide by 14 to convert to proportion (csv units are weird)
-    const x = (parseFloat(chevronAndBallLocations[1])/14.0) * dotParameters.videoWidth;
-    const y = (parseFloat(chevronAndBallLocations[2])/14.0) * dotParameters.videoHeight;
+    // add 0.5 and divide by 15 to convert to proportion (csv units are weird)
+    const x = ((parseFloat(chevronAndBallLocations[1]) + 0.5)/15.0) * dotParameters.videoWidth;
+    const y = ((parseFloat(chevronAndBallLocations[2]) + 0.5)/15.0) * dotParameters.videoHeight;
     dot.style.left = x + "px";
     dot.style.bottom = y + "px";
   }
   function setDotOpacity(dotParameters, dot) {
     dot.style.opacity = dotParameters.opacity;
   }
-  function flashDot(dot, duration) {
-    dot.classList.toggle("hide");
-    setTimeout(function() {
+  function flashDotTimer(dot, flashDot, video) {
+    var id = setInterval(function() {flashDotController(dot,flashDot,video, id);}, 16);
+  }
+  function flashDotController(dot, flashDot, video, id) {
+    if (video.currentTime > flashDot.time) {
       dot.classList.toggle("hide");
-      }, duration);
+      setTimeout(function() {
+        dot.classList.toggle("hide");
+        }, flashDot.duration);
+      clearInterval(id);
+    }
   }
 })();
