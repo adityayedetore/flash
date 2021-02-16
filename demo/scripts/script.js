@@ -5,13 +5,13 @@
   myStartButton.addEventListener("click",  main);
 
   function main() {
-    runTrials([], 0);
+    runTrial([], 0);
   }
-  function runTrials(sawFlash, trialNumber){
+  function runTrial(sawFlashAtOpacities, trialNumber){
     const parameterElements = getParameterElements();
     const displayElements = getDisplayElements();
     parameters = getParameters(parameterElements);
-    runTrialVideo(parameters, displayElements, sawFlash, trialNumber);
+    runTrialVideo(parameters, displayElements, sawFlashAtOpacities, trialNumber);
   }
   function getParameterElements() {
     const elements = {
@@ -90,13 +90,13 @@
     setTimeout(function() {hide(elements.attractor);}, parameters.attractor.hide);
     setTimeout(function() {show(elements.video);}, parameters.video.show);
     setTimeout(function() {startVideo(elements.video);}, parameters.video.start);
-    getReaction(elements.video, sawFlash, trialNumber); 
+    getReaction(elements.video, sawFlash, trialNumber, parameters.flashDot.opacity); 
     setupDot(parameters.flashDot, elements.dot);
     setTimeout(function() {flashDotTimer(elements.dot, parameters.flashDot, elements.video);}, parameters.video.start); 
     setTimeout(function() {stopVideo(elements.video);}, parameters.video.stop);
     setTimeout(function() {resetVideo(elements.video);}, parameters.video.hide);
     setTimeout(function() {hide(elements.video);}, parameters.video.hide);
-    setTimeout(function() {show(elements.inputBoxes);}, parameters.video.hide);
+    setTimeout(function() {nextTrial(elements.inputBoxes, sawFlash, trialNumber);}, parameters.video.hide);
   }
   function startVideo(video) {
     video.play();
@@ -152,12 +152,25 @@
       clearInterval(id);
     }
   }
-  function getReaction(video, sawFlash, trialNumber) {
+  function getReaction(video, sawFlashAtOpacities, trialNumber, opacity) {
     document.addEventListener('keyup', event => {
       if (event.code === "Space") {
-        sawFlash[trialNumber] = true;
+        sawFlashAtOpacities[trialNumber] = opacity;
       }
     },
     {once: true});
+  }
+  function nextTrial(inputBoxes, sawFlashAtOpacities, trialNumber) {
+    experimentDone = isExperimentDone(sawFlashAtOpacities, trialNumber);
+    if (experimentDone) {
+      show(inputBoxes);
+    }
+    else {
+      runTrial(sawFlashAtOpacities, trialNumber + 1);
+    }
+  }
+  function isExperimentDone(sawFlashAtOpacities, trialNumber) {
+    //TODO
+    return sawFlashAtOpacities.length > 0;
   }
 })();
