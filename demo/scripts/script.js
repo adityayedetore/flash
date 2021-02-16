@@ -8,10 +8,15 @@
     runTrial([], 0);
   }
   function runTrial(sawFlashAtOpacities, trialNumber){
+    nextOpacity = getStaircaseOpacity(sawFlashAtOpacities, trialNumber);
     const parameterElements = getParameterElements();
     const displayElements = getDisplayElements();
     parameters = getParameters(parameterElements);
     runTrialVideo(parameters, displayElements, sawFlashAtOpacities, trialNumber);
+  }
+  function getStaircaseOpacity(sawFlashAtOpacities, trialNumber) {
+    //TODO 
+    return 0.5;
   }
   function getParameterElements() {
     const elements = {
@@ -164,10 +169,14 @@
     experimentDone = isExperimentDone(sawFlashAtOpacities, trialNumber);
     if (experimentDone) {
       show(inputBoxes);
+      sendResultsToServer(sawFlashAtOpacities, trialNumber);
     }
     else {
       runTrial(sawFlashAtOpacities, trialNumber + 1);
     }
+  }
+  function sendResultsToServer(sawFlashAtOpacities, trialNumber) {
+    //TODO
   }
   function isExperimentDone(sawFlashAtOpacities, trialNumber) {
     //TODO
