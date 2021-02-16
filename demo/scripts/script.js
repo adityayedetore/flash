@@ -4,11 +4,14 @@
   const myStartButton = document.querySelector("button");
   myStartButton.addEventListener("click",  main);
 
-  function main(){
+  function main() {
+    runTrials([], 0);
+  }
+  function runTrials(sawFlash, trialNumber){
     const parameterElements = getParameterElements();
     const displayElements = getDisplayElements();
     parameters = getParameters(parameterElements);
-    runTrialVideo(parameters, displayElements);
+    runTrialVideo(parameters, displayElements, sawFlash, trialNumber);
   }
   function getParameterElements() {
     const elements = {
@@ -81,12 +84,13 @@
   function hide(element) {
     element.classList.add("hide");
   }
-  function runTrialVideo(parameters, elements) {
+  function runTrialVideo(parameters, elements, sawFlash, trialNumber) {
     setTimeout(function() {hide(elements.inputBoxes);}, 0);
     setTimeout(function() {show(elements.attractor);}, parameters.attractor.show); 
     setTimeout(function() {hide(elements.attractor);}, parameters.attractor.hide);
     setTimeout(function() {show(elements.video);}, parameters.video.show);
     setTimeout(function() {startVideo(elements.video);}, parameters.video.start);
+    getReaction(elements.video, sawFlash, trialNumber); 
     setupDot(parameters.flashDot, elements.dot);
     setTimeout(function() {flashDotTimer(elements.dot, parameters.flashDot, elements.video);}, parameters.video.start); 
     setTimeout(function() {stopVideo(elements.video);}, parameters.video.stop);
@@ -147,5 +151,13 @@
         }, flashDot.duration);
       clearInterval(id);
     }
+  }
+  function getReaction(video, sawFlash, trialNumber) {
+    document.addEventListener('keyup', event => {
+      if (event.code === "Space") {
+        sawFlash[trialNumber] = true;
+      }
+    },
+    {once: true});
   }
 })();
