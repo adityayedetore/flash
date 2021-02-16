@@ -2,9 +2,12 @@
 //See https://www.papaparse.com/
 (function() {
   const myStartButton = document.querySelector("button");
-  myStartButton.addEventListener("click",  () => {main([], 0)});
+  myStartButton.addEventListener("click",  main);
 
-  function main(sawFlash, trialNumber){
+  function main() {
+    runTrials([], 0);
+  }
+  function runTrials(sawFlash, trialNumber){
     const parameterElements = getParameterElements();
     const displayElements = getDisplayElements();
     parameters = getParameters(parameterElements);
